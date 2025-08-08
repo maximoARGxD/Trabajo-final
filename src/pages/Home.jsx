@@ -152,22 +152,43 @@ const Home = () => {
           </section>
         }
 
-        <div>
-          {
-            products.map((product) => <div key={product.id}>
-              <h2 key={product.id}>{product.title}</h2>
-              <img width="80px" src={product.image} alt={`Imagen de ${product.title}`} />
-              <p>${product.price}</p>
-              <p>{product.description}</p>
-              <p><strong>{product.category}</strong></p>
-              {
-                user && <div>
-                  <button onClick={() => handleOpenEdit(product)}>Actualizar</button>
-                  <button onClick={() => handleDelete(product.id)}>Borrar</button>
-                </div>
-              }
-            </div>)
-          }
+        <div className="d-flex flex-wrap gap-3">
+          {products.map((product) => (
+            <div className="card" style={{ width: "18rem" }} key={product.id}>
+              <img
+                src={product.image}
+                className="card-img-top"
+
+              />
+              <div className="card-body">
+                <h5 className="card-title">{product.title}</h5>
+                <p className="card-text">{product.description}</p>
+                <p className="card-text">
+                  <strong>Precio: </strong>${product.price}
+                </p>
+                <p className="card-text">
+                  <strong>Categoría: </strong>{product.category}
+                </p>
+
+                {user && (
+                  <div className="d-flex gap-2">
+                    <button
+                      className="btn btn-warning"
+                      onClick={() => handleOpenEdit(product)}
+                    >
+                      Actualizar
+                    </button>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => handleDelete(product.id)}
+                    >
+                      Borrar
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </Layout>
