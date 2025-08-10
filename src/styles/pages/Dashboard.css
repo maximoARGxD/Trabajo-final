@@ -1,0 +1,28 @@
+.error-message {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+.card {
+    border-radius: 12px;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    transition: transform 0.2s ease;
+}
+
+.product-preview-img {
+    max-height: 250px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
