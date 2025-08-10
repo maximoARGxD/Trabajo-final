@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/UserContext";
+import logoTienda from "../assets/logo-tienda.png";
 
 const Header = () => {
   const { user, logout } = useAuth();
@@ -9,19 +10,18 @@ const Header = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <div className="container-fluid">
-
-        <Link className="navbar-brand" to="/">
+    <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+      <div className="container">
+        
+        <Link className="navbar-brand fw-bold d-flex align-items-center" to="/">
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/8/85/Logo-Test.png"
-            alt="imagen de logo"
+            src={logoTienda}
+            alt="Logo"
             width="40"
             height="40"
-            className="d-inline-block align-text-top"
+            className="me-2"
           />
-          {" "}
-          TEST LOGO
+          TIENDA GENERAL
         </Link>
 
         <button
@@ -37,7 +37,7 @@ const Header = () => {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto">
+          <ul className="navbar-nav ms-auto align-items-lg-center gap-2">
             {user ? (
               <>
                 <li className="nav-item">
@@ -47,22 +47,31 @@ const Header = () => {
                   <Link className="nav-link" to="/dashboard">Dashboard</Link>
                 </li>
                 <li className="nav-item">
-                  <span
-                    className="nav-link text-danger"
-                    role="button"
+                  <Link className="nav-link" to="/sobre-nosotros">Sobre Nosotros</Link>
+                </li>
+                <li className="nav-item">
+                  <button
+                    className="btn btn-sm btn-outline-danger"
                     onClick={handleLogout}
                   >
                     Cerrar sesión
-                  </span>
+                  </button>
                 </li>
               </>
             ) : (
               <>
                 <li className="nav-item">
-                  <Link className="btn btn-primary" to="/login">Login</Link>
+                  <Link className="nav-link" to="/sobre-nosotros">Sobre Nosotros</Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="btn btn-primary" to="/registrate">Regístrate</Link>
+                  <Link className="btn btn-sm btn-primary" to="/login">
+                    Iniciar sesión
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="btn btn-sm btn-outline-primary" to="/registrate">
+                    Regístrate
+                  </Link>
                 </li>
               </>
             )}
