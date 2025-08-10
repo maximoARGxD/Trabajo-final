@@ -1,198 +1,150 @@
-import { useEffect, useState } from "react"
-import { Layout } from "../components/Layout"
-import { useAuth } from "../context/UserContext"
+import { useState } from "react";
+import { Layout } from "../components/Layout";
+import { useAuth } from "../context/UserContext";
+import { useProducts } from "../hook/useProducts";
+import { ProductCard } from "../components/ProductCard";
+import { EditProductModal } from "../components/EditProductModal";
+import "../styles/pages/Home.css";
 
-const Home = () => {
-  const [products, setProducts] = useState([])
-  const [showPopup, setShowPopup] = useState(null)
-  const [productToEdit, setProductToEdit] = useState(null)
-  const [titleEdit, setTitleEdit] = useState("")
-  const [priceEdit, setPriceEdit] = useState("")
-  const [descriptionEdit, setDescriptionEdit] = useState("")
-  const [categoryEdit, setCategoryEdit] = useState("")
-  const [imageEdit, setImageEdit] = useState("")
+export const Home = () => {
+  const { user } = useAuth();
+  const {
+    filteredProducts,
+    searchTerm,
+    setSearchTerm,
+    deleteProduct,
+    updateProduct,
+    loading,
+  } = useProducts();
 
-  // simulando existencia del usuario, proximamente este estado será global
-  const { user } = useAuth()
-
-  const fetchingProducts = async () => {
-    const response = await fetch("https://fakestoreapi.com/products", { method: "GET" })
-    const data = await response.json()
-    setProducts(data)
-  }
-
-  // El array vacío (dependencias) espera a que ejecute el return del jsx. Si tiene algo, useEffect se va a ejecutar cada vez que se modifique lo que este dentro de la dependencia.
-  useEffect(() => {
-    fetchingProducts()
-  }, [])
-
-  const handleDelete = async (id) => {
-    const response = await fetch(`https://fakestoreapi.com/products/${id}`, { method: "DELETE" })
-
-    if (response.ok) {
-      setProducts(prevProduct => prevProduct.filter((product) => product.id != id))
-      // fetchingProducts()
-    }
-  }
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [errors, setErrors] = useState({});
 
   const handleOpenEdit = (product) => {
-    setShowPopup(true)
-    setProductToEdit(product)
-    setTitleEdit(product.title)
-    setPriceEdit(product.price)
-    setDescriptionEdit(product.description)
-    setCategoryEdit(product.category)
-    setImageEdit(product.image)
-  }
+    setFormData(product);
+    setErrors({});
+    setShowEditModal(true);
+  };
 
-  // petición al backend mediante fetch para modificar-> método PATCH / PUT https://fakeproductapi.com/products
-  const handleUpdate = async (e) => {
-    e.preventDefault()
+  const handleCloseEdit = () => setShowEditModal(false);
 
-    const updatedProduct = {
-      id: productToEdit.id,
-      title: titleEdit,
-      price: Number(priceEdit),
-      description: descriptionEdit,
-      category: categoryEdit,
-      image: imageEdit
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmitEdit = (e) => {
+    e.preventDefault();
+
+    let newErrors = {};
+    if (!formData.title) newErrors.title = "El título es obligatorio";
+    if (!formData.price) newErrors.price = "El precio es obligatorio";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
     }
 
-    try {
-      const response = await fetch(`https://fakestoreapi.com/products/${productToEdit.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(updatedProduct)
-      })
+    updateProduct(formData);
+    setShowEditModal(false);
+  };
 
-      if (response.ok) {
-        const data = await response.json()
-        setProducts(prevProduct =>
-          prevProduct.map((product) =>
-            product.id === productToEdit.id
-              ? data
-              : product
-          ))
-        // fetchingProducts()
-      }
-      setShowPopup(false)
-    } catch (error) {
-      console.log(error)
-    }
+  if(loading){
+    return(
+      <div className="loading-overlay">
+        <div className="spinner-border text-primary" role="status" aria-hidden="true"></div>
+        <span className="visually-hidden">Cargando...</span>
+      </div>
+    );
   }
-
   return (
     <Layout>
-      <section>
-        <h1>Bienvenido a Nuestra Tienda</h1>
-        <p>Descubrí una selección exclusiva de productos para vos. Calidad, confianza y atención personalizada.</p>
+      <section class="container text-center my-5">
+        <h1 class="display-5 fw-bold mb-3">Bienvenido a Nuestra Tienda</h1>
+        <p class="lead text-muted">
+          Descubrí una selección exclusiva de productos para vos. Calidad, confianza y atención personalizada.
+        </p>
       </section>
 
-      <section>
-        <h2>¿Por qué elegirnos?</h2>
-        <ul>
-          <li>
-            <h3>Envíos a todo el país</h3>
-            <p>Recibí tu compra en la puerta de tu casa estés donde estés.</p>
-          </li>
-          <li>
-            <h3>Pagos seguros</h3>
-            <p>Trabajamos con plataformas que garantizan tu seguridad.</p>
-          </li>
-          <li>
-            <h3>Atención personalizada</h3>
-            <p>Estamos disponibles para ayudarte en todo momento.</p>
-          </li>
-        </ul>
-      </section>
-
-      <section>
-        <h2>Nuestros productos</h2>
-        <p>Elegí entre nuestras categorías más populares.</p>
-
-
-        {
-          showPopup && <section className="popup-edit">
-            <h2>Editando producto.</h2>
-            <button onClick={() => setShowPopup(null)}>Cerrar</button>
-            <form onSubmit={handleUpdate}>
-              <input
-                type="text"
-                placeholder="Ingrese el titulo"
-                value={titleEdit}
-                onChange={(e) => setTitleEdit(e.target.value)}
-              />
-              <input
-                type="number"
-                placeholder="Ingrese el precio"
-                value={priceEdit}
-                onChange={(e) => setPriceEdit(e.target.value)}
-              />
-              <textarea
-                placeholder="Ingrese la descripción"
-                value={descriptionEdit}
-                onChange={(e) => setDescriptionEdit(e.target.value)}
-              ></textarea>
-              <input
-                type="text"
-                placeholder="Ingrese la categoria"
-                value={categoryEdit}
-                onChange={(e) => setCategoryEdit(e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Ingrese la URL de la imagen"
-                value={imageEdit}
-                onChange={(e) => setImageEdit(e.target.value)}
-              />
-              <button>Actualizar</button>
-            </form>
-          </section>
-        }
-
-        <div className="d-flex flex-wrap gap-3">
-          {products.map((product) => (
-            <div className="card" style={{ width: "18rem" }} key={product.id}>
-              <img
-                src={product.image}
-                className="card-img-top"
-
-              />
-              <div className="card-body">
-                <h5 className="card-title">{product.title}</h5>
-                <p className="card-text">{product.description}</p>
-                <p className="card-text">
-                  <strong>Precio: </strong>${product.price}
-                </p>
-                <p className="card-text">
-                  <strong>Categoría: </strong>{product.category}
-                </p>
-
-                {user && (
-                  <div className="d-flex gap-2">
-                    <button
-                      className="btn btn-warning"
-                      onClick={() => handleOpenEdit(product)}
-                    >
-                      Actualizar
-                    </button>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => handleDelete(product.id)}
-                    >
-                      Borrar
-                    </button>
-                  </div>
-                )}
+      <section class="container my-5">
+        <h2 class="text-center fw-bold mb-4">¿Por qué elegirnos?</h2>
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="card h-100 shadow-sm feature-card">
+              <div class="card-body">
+                <h3 class="h5 fw-semibold">Envíos a todo el país</h3>
+                <p class="text-muted">Recibí tu compra en la puerta de tu casa estés donde estés.</p>
               </div>
             </div>
-          ))}
+          </div>
+          <div class="col-md-4">
+            <div class="card h-100 shadow-sm feature-card">
+              <div class="card-body">
+                <h3 class="h5 fw-semibold">Pagos seguros</h3>
+                <p class="text-muted">Trabajamos con plataformas que garantizan tu seguridad.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card h-100 shadow-sm feature-card">
+              <div class="card-body">
+                <h3 class="h5 fw-semibold">Atención personalizada</h3>
+                <p class="text-muted">Estamos disponibles para ayudarte en todo momento.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
-    </Layout>
-  )
-}
 
-export { Home }
+      <section class="container text-center my-5">
+        <h2 class="fw-bold mb-3">Nuestros productos</h2>
+        <p class="lead text-muted">
+          Elegí entre nuestras categorías más populares.
+        </p>
+      </section>
+
+      <section className="section-products">
+        <div className="mb-5">
+          <div className="input-group input-group-lg shadow-sm rounded-pill overflow-hidden search-input-wrapper">
+            <span className="input-group-text bg-primary text-white border-0">
+              <i className="bi bi-search"></i>
+            </span>
+            <input
+              type="text"
+              className="form-control border-0"
+              placeholder="Buscar productos..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              disabled={loading}
+            />
+          </div>
+        </div>
+
+        <div className="row justify-content-center g-4">
+          {!loading && filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                user={user}
+                onEdit={() => handleOpenEdit(product)}
+                onDelete={() => deleteProduct(product)}
+              />
+            ))
+          ) : (
+            !loading && <p className="text-muted text-center">No se encontraron productos.</p>
+          )}
+        </div>
+      </section>
+
+      <EditProductModal
+        show={showEditModal}
+        onClose={handleCloseEdit}
+        onSubmit={handleSubmitEdit}
+        formData={formData}
+        errors={errors}
+        handleChange={handleChange}
+      />
+    </Layout>
+  );
+};

@@ -1,0 +1,119 @@
+:root {
+  --primary-color: #1e88e5;
+  --primary-hover: #1565c0;
+  --secondary-color: #fbc02d;
+  --secondary-hover: #f9a825;
+  --danger-color: #e53935;
+  --danger-hover: #b71c1c;
+  --text-color: #333;
+  --light-bg: #f9f9f9;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--light-bg);
+  color: var(--text-color);
+}
+
+.section-products {
+  margin-inline: clamp(1rem, 5vw, 150px);
+  padding: 2rem 0;
+}
+
+.card {
+  background-color: white;
+  border-radius: 1rem;
+  border: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.btn-outline-warning {
+  border-color: var(--secondary-color);
+  color: var(--secondary-color);
+  transition: all 0.3s ease;
+}
+.btn-outline-warning:hover {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.btn-outline-danger {
+  border-color: var(--danger-color);
+  color: var(--danger-color);
+  transition: all 0.3s ease;
+}
+.btn-outline-danger:hover {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border: none;
+  transition: background-color 0.3s ease;
+}
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+h1, h2, h3 {
+  color: var(--primary-color);
+}
+
+.input-group-text.bg-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.form-control:focus {
+  box-shadow: 0 0 0 0.2rem rgba(30, 136, 229, 0.25);
+}
+
+.search-input-wrapper {
+  max-width: 500px;
+  margin: 0 auto 2rem auto;
+  border-radius: 50px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.search-input-wrapper .input-group-text,
+.search-input-wrapper .form-control {
+  border: 0;
+  box-shadow: none;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.loading-overlay .spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+.feature-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 15px;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
