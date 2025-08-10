@@ -1,0 +1,106 @@
+.aboutus-container {
+    background: linear-gradient(135deg, #4f46e5, #3b82f6);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 1rem;
+    }
+
+.aboutus-card {
+    background: #fff;
+    max-width: 900px;
+    width: 100%;
+    border-radius: 20px;
+    padding: 2.5rem 3rem;
+    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3), 0 6px 10px rgba(59, 130, 246, 0.25);
+    opacity: 0;
+    transform: translateY(25px);
+    animation: fadeSlideIn 0.7s ease forwards;
+    }
+
+.aboutus-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    position: relative;
+    color: #222;
+    }
+
+.aboutus-header i {
+    color: #4f46e5;
+    font-size: 2.5rem;
+    }
+
+.aboutus-header h3 {
+    font-weight: 700;
+    margin-top: 0.75rem;
+    }
+
+.aboutus-header .underline {
+    height: 3px;
+    width: 80px;
+    background-color: #4f46e5;
+    margin: 0.5rem auto 1.5rem;
+    border-radius: 2px;
+    }
+
+.aboutus-header p {
+    color: #6c757d;
+    font-size: 0.9rem;
+    }
+
+.aboutus-section {
+    margin-bottom: 3rem;
+    }
+
+.aboutus-section h5 {
+    font-weight: 600;
+    color: #4f46e5;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    }
+
+.aboutus-section h5 i {
+    font-size: 1.2rem;
+    }
+
+.aboutus-section p {
+    color: #6c757d;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    }
+
+.aboutus-btn {
+    display: inline-block;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.5rem 1.5rem;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+    border: 1.5px solid #4f46e5;
+    color: #4f46e5;
+    background-color: transparent;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    }
+
+.aboutus-btn:hover,.aboutus-btn:focus {
+    background-color: #4f46e5;
+    color: #fff;
+    text-decoration: none;
+    }
+
+@keyframes fadeSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
