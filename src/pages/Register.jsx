@@ -1,80 +1,120 @@
-import { useState } from "react"
-import { Layout } from "../components/Layout"
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/UserContext";
+import "../styles/pages/Register.css";
 
 const Register = () => {
-  const [username, setUsername] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [success, setSuccess] = useState("")
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const { register } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    setError("")
-    setSuccess("")
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
 
     if (!username || !email || !password) {
-      setError("Debes completar todos los campos")
-      return
+      setError("Debes completar todos los campos");
+      return;
     }
 
-    const newUser = {
-      username,
-      email,
-      password
+    const result = await register(username, email, password);
+
+    if (result.ok) {
+      setSuccess(result.message);
+      setTimeout(() => navigate("/login"), 2000);
+    } else {
+      setError(result.message);
     }
-
-    console.log(newUser)
-    setSuccess("Usuario registrado con éxito")
-
-    setUsername("")
-    setEmail("")
-    setPassword("")
-  }
+  };
 
   return (
-    <Layout>
-      <h1>Registrate</h1>
+    <div className="register-container">
+      <div className="register-card">
+        <div className="text-center mb-4">
+          <i className="bi bi-person-plus fs-1 icon-main"></i>
+          <h4 className="fw-bold mt-3 mb-1 title">Crear cuenta</h4>
+          <p className="text-muted small">Completa tus datos para registrarte</p>
+        </div>
 
-      <section>
-        <h2>Hola, bienvenido</h2>
         <form onSubmit={handleSubmit}>
-          <div>
-            <label>Username:</label>
-            <input
-              type="text"
-              onChange={(e) => setUsername(e.target.value)}
-              value={username}
-            />
+          <div className="mb-3">
+            <label className="form-label fw-semibold small">Nombre de usuario</label>
+            <div className="input-group">
+              <span className="input-group-text border-0 bg-light">
+                <i className="bi bi-person text-secondary"></i>
+              </span>
+              <input
+                type="text"
+                className="form-control border-0 bg-light rounded-end"
+                placeholder="Tu nombre de usuario"
+                onChange={(e) => setUsername(e.target.value)}
+                value={username}
+              />
+            </div>
           </div>
-          <div>
-            <label>Correo electrónico:</label>
-            <input
-              type="email"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
-            />
+
+          <div className="mb-3">
+            <label className="form-label fw-semibold small">Correo electrónico</label>
+            <div className="input-group">
+              <span className="input-group-text border-0 bg-light">
+                <i className="bi bi-envelope text-secondary"></i>
+              </span>
+              <input
+                type="email"
+                className="form-control border-0 bg-light"
+                placeholder="Tu correo electrónico"
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
+              />
+            </div>
           </div>
-          <div>
-            <label>Contraseña:</label>
-            <input
-              type="password"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-            />
+
+          <div className="mb-4">
+            <label className="form-label fw-semibold small">Contraseña</label>
+            <div className="input-group">
+              <span className="input-group-text border-0 bg-light">
+                <i className="bi bi-lock text-secondary"></i>
+              </span>
+              <input
+                type={showPassword ? "text" : "password"}
+                className="form-control border-0 bg-light"
+                placeholder="Crea una contraseña"
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+              />
+              <span
+                className="input-group-text border-0 bg-light password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"} text-primary`}></i>
+              </span>
+            </div>
           </div>
-          <button>Ingresar</button>
+
+          <div className="d-grid mb-3">
+            <button className="btn-register" type="submit">
+              <i className="bi bi-person-plus-fill me-2"></i> Registrarse
+            </button>
+          </div>
         </form>
 
-        {
-          error && <p style={{ color: "red" }}>{error}</p>
-        }
-        {
-          success && <p style={{ color: "green" }}>{success}</p>
-        }
-      </section>
-    </Layout>
-  )
-}
+        {error && <p className="text-danger small text-center">{error}</p>}
+        {success && <p className="text-success small text-center">{success}</p>}
 
-export { Register }
+        <div className="text-center mt-4">
+          <Link to="/login" className="d-inline-block mb-3 fw-semibold link-primary">Ya tengo una cuenta</Link>
+          <br />
+          <Link to="/" className="fw-semibold link-secondary">Continuar sin iniciar sesión</Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export { Register };
